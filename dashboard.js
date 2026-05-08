@@ -21,22 +21,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currentUser = JSON.parse(sessionStorage.getItem('matos_currentUser'));
 
-// Se não houver ninguém com sessão iniciada, cria um acesso automático para a página não bloquear
-if (!currentUser) {
-    let users = JSON.parse(localStorage.getItem('matos_users')) || [];
-    
-    // Assume automaticamente o perfil do primeiro utilizador (geralmente o Admin)
-    if (users.length > 0) {
-        currentUser = users[0];
-    } else {
-        // Se a base de dados estiver vazia, cria um visitante fantasma com todos os privilégios
-        currentUser = { id: 999, name: 'Visitante', role: 'admin', canEditNews: true, canEditChat: true };
+    // Se não houver ninguém com sessão iniciada, cria um acesso automático para a página não bloquear
+    if (!currentUser) {
+        let users = JSON.parse(localStorage.getItem('matos_users')) || [];
+        
+        // Assume automaticamente o perfil do primeiro utilizador (geralmente o Admin)
+        if (users.length > 0) {
+            currentUser = users[0];
+        } else {
+            // Se a base de dados estiver vazia, cria um visitante fantasma com todos os privilégios
+            currentUser = { id: 999, name: 'Visitante', role: 'admin', canEditNews: true, canEditChat: true };
+        }
+        
+        // Guarda este utilizador na sessão para o resto do código funcionar
+        sessionStorage.setItem('matos_currentUser', JSON.stringify(currentUser));
     }
-    
-    // Guarda este utilizador na sessão para o resto do código funcionar
-    sessionStorage.setItem('matos_currentUser', JSON.stringify(currentUser));
-}
-    };
+    // AQUI HAVIA UM "};" SOBRANDO QUE QUEBRAVA O CÓDIGO. FOI REMOVIDO!
 
     function applyPermissions() {
         document.getElementById('userNameDisplay').textContent = currentUser.name;
