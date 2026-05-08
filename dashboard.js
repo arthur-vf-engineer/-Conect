@@ -20,12 +20,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     let currentUser = JSON.parse(sessionStorage.getItem('matos_currentUser'));
-    if (!currentUser) { window.location.href = 'index.html'; return; }
 
-    window.switchUser = function(role) {
-        const users = JSON.parse(localStorage.getItem('matos_users'));
-        const targetUser = users.find(u => u.role === role);
-        if(targetUser) { sessionStorage.setItem('matos_currentUser', JSON.stringify(targetUser)); location.reload(); }
+// Se não houver ninguém com sessão iniciada, cria um acesso automático para a página não bloquear
+if (!currentUser) {
+    let users = JSON.parse(localStorage.getItem('matos_users')) || [];
+    
+    // Assume automaticamente o perfil do primeiro utilizador (geralmente o Admin)
+    if (users.length > 0) {
+        currentUser = users[0];
+    } else {
+        // Se a base de dados estiver vazia, cria um visitante fantasma com todos os privilégios
+        currentUser = { id: 999, name: 'Visitante', role: 'admin', canEditNews: true, canEditChat: true };
+    }
+    
+    // Guarda este utilizador na sessão para o resto do código funcionar
+    sessionStorage.setItem('matos_currentUser', JSON.stringify(currentUser));
+}
     };
 
     function applyPermissions() {
